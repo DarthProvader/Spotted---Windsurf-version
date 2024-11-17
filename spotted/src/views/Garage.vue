@@ -376,9 +376,6 @@ import useSpots from '../composables/useSpots'
 const getImageUrl = (url) => {
   if (!url) return ''
   const filename = url.split('/').pop()
-  console.log('Original URL:', url)
-  console.log('Filename:', filename)
-  console.log('Final URL:', `/images/${filename}`)
   return `/images/${filename}`
 }
 
@@ -402,7 +399,6 @@ onMounted(async () => {
   await getUserSpots()
   spots.value.forEach(spot => {
     currentImageIndexes.value[spot.id] = 0
-    console.log('Spot images:', spot.imageUrls)
   })
 })
 
