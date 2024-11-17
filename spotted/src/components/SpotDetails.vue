@@ -60,75 +60,69 @@
         </dl>
 
         <!-- Edit Form -->
-        <form v-else @submit.prevent="saveEdit" class="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
-          <div class="sm:col-span-1">
-            <label for="make" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Make</label>
-            <input
-              type="text"
-              id="make"
-              v-model="editForm.make"
-              class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:focus:ring-indigo-400 sm:text-sm px-4 py-2.5"
-            >
+        <form v-else @submit.prevent="saveEdit">
+          <div class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+            <div>
+              <label for="make" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Make</label>
+              <input
+                type="text"
+                id="make"
+                v-model="editForm.make"
+                class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:focus:ring-indigo-400 sm:text-sm p-2.5"
+              >
+            </div>
+            <div>
+              <label for="model" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Model</label>
+              <input
+                type="text"
+                id="model"
+                v-model="editForm.model"
+                class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:focus:ring-indigo-400 sm:text-sm p-2.5"
+              >
+            </div>
+            <div>
+              <label for="year" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Year</label>
+              <input
+                type="number"
+                id="year"
+                v-model="editForm.year"
+                class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:focus:ring-indigo-400 sm:text-sm p-2.5"
+              >
+            </div>
+            <div>
+              <label for="color" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Color</label>
+              <input
+                type="text"
+                id="color"
+                v-model="editForm.color"
+                class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:focus:ring-indigo-400 sm:text-sm p-2.5"
+              >
+            </div>
+            <div>
+              <label for="location" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Location</label>
+              <input
+                type="text"
+                id="location"
+                v-model="editForm.location"
+                class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:focus:ring-indigo-400 sm:text-sm p-2.5"
+              >
+            </div>
+            <div class="sm:col-span-2">
+              <label for="notes" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Notes</label>
+              <textarea
+                id="notes"
+                v-model="editForm.notes"
+                rows="3"
+                class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:focus:ring-indigo-400 sm:text-sm p-2.5"
+              ></textarea>
+            </div>
           </div>
-          <div class="sm:col-span-1">
-            <label for="model" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Model</label>
-            <input
-              type="text"
-              id="model"
-              v-model="editForm.model"
-              class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:focus:ring-indigo-400 sm:text-sm px-4 py-2.5"
-            >
-          </div>
-          <div class="sm:col-span-1">
-            <label for="year" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Year</label>
-            <input
-              type="number"
-              id="year"
-              v-model="editForm.year"
-              class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:focus:ring-indigo-400 sm:text-sm px-4 py-2.5"
-            >
-          </div>
-          <div class="sm:col-span-1">
-            <label for="color" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Color</label>
-            <input
-              type="text"
-              id="color"
-              v-model="editForm.color"
-              class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:focus:ring-indigo-400 sm:text-sm px-4 py-2.5"
-            >
-          </div>
-          <div class="sm:col-span-2">
-            <label for="location" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Location</label>
-            <input
-              type="text"
-              id="location"
-              v-model="editForm.location"
-              class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:focus:ring-indigo-400 sm:text-sm px-4 py-2.5"
-            >
-          </div>
-          <div class="sm:col-span-2">
-            <label for="notes" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Notes</label>
-            <textarea
-              id="notes"
-              v-model="editForm.notes"
-              rows="3"
-              class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:focus:ring-indigo-400 sm:text-sm px-4 py-2.5"
-            ></textarea>
-          </div>
-          <div class="sm:col-span-2 flex justify-end space-x-3">
-            <button
-              type="button"
-              @click="saveEdit"
-              class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-900"
-            >
-              Save Changes
-            </button>
-            <button
-              type="button"
-              @click="cancelEdit"
-              class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-900"
-            >
+          <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex justify-end space-x-4">
+            <button class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-300 text-sm font-medium" @click="cancelEdit">
               Cancel
+            </button>
+            <button type="submit" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 text-sm font-medium">
+              Save Changes
             </button>
           </div>
         </form>
