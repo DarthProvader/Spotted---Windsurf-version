@@ -24,3 +24,13 @@ dist-ssr
 *.sw?
 
 .env
+
+# Images and uploads
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.webp
+*.avif
+/public/uploads/
+/uploads/

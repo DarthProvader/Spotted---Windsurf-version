@@ -114,9 +114,10 @@
           <!-- Image with Navigation -->
           <div class="relative aspect-w-16 aspect-h-9">
             <img
-              :src="spot.imageUrls[currentImageIndexes[spot.id]]"
+              :src="getImageUrl(spot.imageUrls[currentImageIndexes[spot.id]])"
               :alt="`${spot.make} ${spot.model}`"
               class="w-full h-48 object-cover"
+              @error="console.error('Failed to load image:', spot.imageUrls[currentImageIndexes[spot.id]])"
             >
             <div v-if="spot.imageUrls.length > 1" class="absolute inset-0">
               <button
@@ -194,10 +195,10 @@
             <img
               v-for="(url, index) in selectedSpot.imageUrls"
               :key="index"
-              :src="url"
+              :src="getImageUrl(url)"
               :alt="`${selectedSpot.make} ${selectedSpot.model} - Image ${index + 1}`"
               class="w-full h-48 object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
-              @click="openImagePreview(url)"
+              @click="openImagePreview(getImageUrl(url))"
             >
           </div>
 
@@ -227,6 +228,12 @@
         <!-- Modal Footer -->
         <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex justify-end space-x-4">
           <button
+            @click="startEdit"
+            class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 text-sm font-medium"
+          >
+            Edit Spot
+          </button>
+          <button
             @click="handleDelete(selectedSpot)"
             class="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 text-sm font-medium"
           >
@@ -242,15 +249,109 @@
       </div>
     </div>
 
+    <!-- Edit Spot Modal -->
+    <div
+      v-if="isEditing"
+      class="fixed inset-0 bg-gray-500 dark:bg-gray-900 bg-opacity-75 dark:bg-opacity-75 flex items-center justify-center p-4"
+      @click="cancelEdit"
+    >
+      <div
+        class="bg-white dark:bg-gray-800 rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto"
+        @click.stop
+      >
+        <!-- Modal Header -->
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
+            Edit {{ selectedSpot.year }} {{ selectedSpot.make }} {{ selectedSpot.model }}
+          </h2>
+        </div>
+
+        <!-- Modal Content -->
+        <div class="px-6 py-4">
+          <form @submit.prevent="saveEdit">
+            <div class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+              <div>
+                <label for="make" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Make</label>
+                <input
+                  id="make"
+                  v-model="editForm.make"
+                  type="text"
+                  class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:focus:ring-indigo-400 sm:text-sm"
+                >
+              </div>
+              <div>
+                <label for="model" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Model</label>
+                <input
+                  id="model"
+                  v-model="editForm.model"
+                  type="text"
+                  class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:focus:ring-indigo-400 sm:text-sm"
+                >
+              </div>
+              <div>
+                <label for="year" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Year</label>
+                <input
+                  id="year"
+                  v-model="editForm.year"
+                  type="number"
+                  class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:focus:ring-indigo-400 sm:text-sm"
+                >
+              </div>
+              <div>
+                <label for="color" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Color</label>
+                <input
+                  id="color"
+                  v-model="editForm.color"
+                  type="text"
+                  class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:focus:ring-indigo-400 sm:text-sm"
+                >
+              </div>
+              <div>
+                <label for="location" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Location</label>
+                <input
+                  id="location"
+                  v-model="editForm.location"
+                  type="text"
+                  class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:focus:ring-indigo-400 sm:text-sm"
+                >
+              </div>
+              <div class="sm:col-span-2">
+                <label for="notes" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Notes</label>
+                <textarea
+                  id="notes"
+                  v-model="editForm.notes"
+                  class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:focus:ring-indigo-400 sm:text-sm"
+                ></textarea>
+              </div>
+            </div>
+            <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex justify-end space-x-4">
+              <button
+                @click="cancelEdit"
+                class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-300 text-sm font-medium"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 text-sm font-medium"
+              >
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
     <!-- Image Preview Modal -->
     <div
-      v-if="selectedImage"
+      v-if="previewImage"
       class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center p-4 z-50"
       @click="closeImagePreview"
     >
       <div class="relative max-w-7xl w-full max-h-[90vh] flex items-center justify-center">
         <img
-          :src="selectedImage"
+          :src="previewImage"
           class="max-w-full max-h-[85vh] object-contain"
           @click.stop
         >
@@ -271,24 +372,37 @@
 import { ref, computed, onMounted } from 'vue'
 import useSpots from '../composables/useSpots'
 
-const { spots, error, isPending, getUserSpots, deleteSpot } = useSpots()
+// Helper function to get image URL
+const getImageUrl = (url) => {
+  if (!url) return ''
+  const filename = url.split('/').pop()
+  console.log('Original URL:', url)
+  console.log('Filename:', filename)
+  console.log('Final URL:', `/images/${filename}`)
+  return `/images/${filename}`
+}
+
+const { spots, error, isPending, getUserSpots, deleteSpot, updateSpot } = useSpots()
 const selectedSpot = ref(null)
-const selectedImage = ref(null)
-const filters = ref({
-  make: '',
-  year: '',
-  color: ''
-})
-const sortBy = ref('createdAt')
-
-// Add current image index tracking for each spot
+const previewImage = ref(null)
 const currentImageIndexes = ref({})
+const filters = ref({ make: '', year: '', color: '' })
+const sortBy = ref('createdAt')
+const isEditing = ref(false)
+const editForm = ref({
+  make: '',
+  model: '',
+  year: '',
+  color: '',
+  location: '',
+  notes: ''
+})
 
-// Initialize current image index when spots are loaded
 onMounted(async () => {
   await getUserSpots()
   spots.value.forEach(spot => {
     currentImageIndexes.value[spot.id] = 0
+    console.log('Spot images:', spot.imageUrls)
   })
 })
 
@@ -306,57 +420,34 @@ const prevImage = (spot) => {
 }
 
 const openImagePreview = (imageUrl) => {
-  selectedImage.value = imageUrl
+  previewImage.value = imageUrl
 }
 
 const closeImagePreview = () => {
-  selectedImage.value = null
+  previewImage.value = null
 }
 
-// Get unique values for filters
-const uniqueMakes = computed(() => {
-  return [...new Set(spots.value.map(spot => spot.make))].sort()
-})
+// Edit methods
+const startEdit = () => {
+  editForm.value = { ...selectedSpot.value }
+  isEditing.value = true
+}
 
-const uniqueYears = computed(() => {
-  return [...new Set(spots.value.map(spot => spot.year))].sort((a, b) => b - a)
-})
+const cancelEdit = () => {
+  editForm.value = { ...selectedSpot.value }
+  isEditing.value = false
+}
 
-const uniqueColors = computed(() => {
-  return [...new Set(spots.value.map(spot => spot.color))].sort()
-})
-
-// Apply filters and sorting
-const filteredSpots = computed(() => {
-  let filtered = [...spots.value]
-
-  // Apply filters
-  if (filters.value.make) {
-    filtered = filtered.filter(spot => spot.make === filters.value.make)
+const saveEdit = async () => {
+  try {
+    await updateSpot(selectedSpot.value.id, editForm.value)
+    selectedSpot.value = { ...selectedSpot.value, ...editForm.value }
+    isEditing.value = false
+  } catch (err) {
+    console.error('Error updating spot:', err)
+    // TODO: Add error handling UI
   }
-  if (filters.value.year) {
-    filtered = filtered.filter(spot => spot.year === parseInt(filters.value.year))
-  }
-  if (filters.value.color) {
-    filtered = filtered.filter(spot => spot.color === filters.value.color)
-  }
-
-  // Apply sorting
-  filtered.sort((a, b) => {
-    if (sortBy.value === 'createdAt') {
-      return b.createdAt - a.createdAt
-    }
-    if (sortBy.value === 'make') {
-      return a.make.localeCompare(b.make)
-    }
-    if (sortBy.value === 'year') {
-      return b.year - a.year
-    }
-    return 0
-  })
-
-  return filtered
-})
+}
 
 // Delete spot
 const handleDelete = async (spot) => {
@@ -365,4 +456,27 @@ const handleDelete = async (spot) => {
     selectedSpot.value = null
   }
 }
+
+// Get unique values for filters
+const uniqueMakes = computed(() => {
+  return [...new Set(spots.value.map(spot => spot.make))].sort()
+})
+
+const uniqueYears = computed(() => {
+  return [...new Set(spots.value.map(spot => spot.year))].sort()
+})
+
+const uniqueColors = computed(() => {
+  return [...new Set(spots.value.map(spot => spot.color))].sort()
+})
+
+// Apply filters
+const filteredSpots = computed(() => {
+  return spots.value.filter(spot => {
+    const makeMatch = !filters.value.make || spot.make === filters.value.make
+    const yearMatch = !filters.value.year || spot.year === filters.value.year
+    const colorMatch = !filters.value.color || spot.color === filters.value.color
+    return makeMatch && yearMatch && colorMatch
+  })
+})
 </script>

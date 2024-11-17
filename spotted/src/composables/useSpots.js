@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { db } from '../firebase/config'
-import { collection, addDoc, query, where, getDocs, orderBy, doc, deleteDoc } from 'firebase/firestore'
+import { collection, addDoc, query, where, getDocs, orderBy, doc, deleteDoc, updateDoc } from 'firebase/firestore'
 import { useAuth } from './useAuth'
 
 const { user } = useAuth()
@@ -120,6 +120,36 @@ const useSpots = () => {
     }
   }
 
+  const updateSpot = async (spotId, spotData) => {
+    error.value = null
+    isPending.value = true
+
+    try {
+      const spotRef = doc(db, 'spots', spotId)
+      await updateDoc(spotRef, {
+        ...spotData,
+        updatedAt: new Date()
+      })
+
+      // Update local state
+      const index = spots.value.findIndex(s => s.id === spotId)
+      if (index !== -1) {
+        spots.value[index] = {
+          ...spots.value[index],
+          ...spotData,
+          updatedAt: new Date()
+        }
+      }
+
+      isPending.value = false
+    } catch (err) {
+      console.error('Error updating spot:', err)
+      error.value = 'Could not update the spot'
+      isPending.value = false
+      throw err
+    }
+  }
+
   return {
     error,
     isPending,
@@ -127,7 +157,8 @@ const useSpots = () => {
     spot,
     addSpot,
     getUserSpots,
-    deleteSpot
+    deleteSpot,
+    updateSpot
   }
 }
 
