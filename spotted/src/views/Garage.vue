@@ -1,22 +1,101 @@
 <template>
   <div class="min-h-screen bg-gray-100 dark:bg-gray-900 py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center mb-8">
+      <div class="flex justify-between items-center mb-4">
         <h1 class="text-3xl font-bold text-gray-900 dark:text-white">My Garage</h1>
         <div class="flex items-center space-x-4">
-          <FilterDropdown
-            v-model="filters"
-            :makes="uniqueMakes"
-            :years="uniqueYears"
-            :colors="uniqueColors"
-            v-model:sort="sortBy"
-          />
+          <button
+            @click="showFilters = !showFilters"
+            class="inline-flex items-center px-3 sm:px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-900"
+            aria-label="Toggle filters"
+          >
+            <span class="hidden sm:inline mr-2">{{ showFilters ? 'Hide Filters' : 'Show Filters' }}</span>
+            <svg
+              class="h-5 w-5 transition-transform"
+              :class="{ 'transform rotate-180': showFilters }"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
           <router-link
             to="/add-spot"
-            class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-900"
+            class="inline-flex items-center px-3 sm:px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-900"
+            aria-label="Add new spot"
           >
-            Add New Spot
+            <span class="hidden sm:inline mr-2">Add New Spot</span>
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              class="h-5 w-5" 
+              viewBox="0 0 20 20" 
+              fill="currentColor"
+            >
+              <path 
+                fill-rule="evenodd" 
+                d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" 
+                clip-rule="evenodd" 
+              />
+            </svg>
           </router-link>
+        </div>
+      </div>
+
+      <!-- Filter Section -->
+      <div
+        v-show="showFilters"
+        class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm mb-6 transition-all duration-200 ease-in-out"
+      >
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Make</label>
+            <select
+              v-model="filters.make"
+              class="block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:focus:ring-indigo-400 sm:text-sm p-2.5"
+            >
+              <option value="">All Makes</option>
+              <option v-for="make in uniqueMakes" :key="make" :value="make">{{ make }}</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Year</label>
+            <select
+              v-model="filters.year"
+              class="block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:focus:ring-indigo-400 sm:text-sm p-2.5"
+            >
+              <option value="">All Years</option>
+              <option v-for="year in uniqueYears" :key="year" :value="year">{{ year }}</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Color</label>
+            <select
+              v-model="filters.color"
+              class="block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:focus:ring-indigo-400 sm:text-sm p-2.5"
+            >
+              <option value="">All Colors</option>
+              <option v-for="color in uniqueColors" :key="color" :value="color">{{ color }}</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Sort By</label>
+            <select
+              v-model="sortBy"
+              class="block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:focus:ring-indigo-400 sm:text-sm p-2.5"
+            >
+              <option value="createdAt">Date Added</option>
+              <option value="make">Make</option>
+              <option value="year">Year</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -326,7 +405,6 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import useSpots from '../composables/useSpots'
-import FilterDropdown from '../components/FilterDropdown.vue'
 
 // Helper function to get image URL
 const getImageUrl = (url) => {
@@ -339,12 +417,13 @@ const { spots, error, isPending, getUserSpots, deleteSpot, updateSpot } = useSpo
 const selectedSpot = ref(null)
 const previewImage = ref(null)
 const currentImageIndexes = ref({})
-const filters = ref({ make: '', year: '', color: '' })
+const editMode = ref(false)
+const editedSpot = ref({})
 const sortBy = ref('createdAt')
-const isEditing = ref(false)
-const editForm = ref({
+const showFilters = ref(false)
+
+const filters = ref({
   make: '',
-  model: '',
   year: '',
   color: '',
   location: '',

@@ -1,5 +1,5 @@
 <template>
-  <div class="relative">
+  <div class="relative" ref="dropdownRef">
     <button
       @click="isOpen = !isOpen"
       class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-900"
@@ -24,9 +24,12 @@
     <!-- Dropdown panel -->
     <div
       v-show="isOpen"
-      class="origin-top-right absolute right-0 mt-2 w-96 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-10"
+      class="origin-top-right absolute right-0 mt-2 w-screen sm:w-96 max-w-[calc(100vw-2rem)] rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-10"
+      :class="{
+        'left-0 sm:left-auto': window?.value?.innerWidth < 640
+      }"
     >
-      <div class="p-6 space-y-6">
+      <div class="p-4 sm:p-6 space-y-6">
         <div>
           <label for="makeFilter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Make</label>
           <select
@@ -81,7 +84,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 
 const props = defineProps({
@@ -108,18 +111,33 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:modelValue', 'update:sort'])
-
 const isOpen = ref(false)
-const dropdownRef = ref(null)
+const window = ref(null)
+
+// Track window width
+onMounted(() => {
+  window.value = globalThis.window
+  const handleResize = () => {
+    window.value = globalThis.window
+  }
+  globalThis.window.addEventListener('resize', handleResize)
+  onUnmounted(() => {
+    globalThis.window.removeEventListener('resize', handleResize)
+  })
+})
 
 // Close dropdown when clicking outside
+const dropdownRef = ref(null)
 onClickOutside(dropdownRef, () => {
   isOpen.value = false
 })
 
-// Computed property for sort value with two-way binding
 const sortValue = computed({
-  get: () => props.sort,
-  set: (value) => emit('update:sort', value)
+  get() {
+    return props.sort
+  },
+  set(value) {
+    emit('update:sort', value)
+  }
 })
 </script>
