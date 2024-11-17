@@ -338,7 +338,6 @@ const removeAIImage = () => {
   }
   aiImageFile.value = null
   aiImagePreviewUrl.value = ''
-  aiRecognitionResult = null
 }
 
 const recognizeAICar = async () => {
@@ -350,7 +349,7 @@ const recognizeAICar = async () => {
     if (error) {
       throw new Error(error)
     }
-    aiRecognitionResult = result
+    aiRecognitionResult.value = result
   } catch (error) {
     console.error('Error recognizing car:', error)
     // TODO: Add error handling UI
@@ -360,18 +359,19 @@ const recognizeAICar = async () => {
 }
 
 const applyAIResult = async () => {
-  if (!aiRecognitionResult) return
+  if (!aiRecognitionResult.value) return
 
   try {
-    // Create a new spot with the recognized data
-    const formData = new FormData()
-    formData.append('make', aiRecognitionResult.make)
-    formData.append('model', aiRecognitionResult.model)
-    formData.append('year', aiRecognitionResult.year)
-    formData.append('color', aiRecognitionResult.color)
-    formData.append('image', aiImageFile.value)
+    // Create spot data object
+    const spotData = {
+      make: aiRecognitionResult.value.make,
+      model: aiRecognitionResult.value.model,
+      year: aiRecognitionResult.value.year,
+      color: aiRecognitionResult.value.color
+    }
 
-    await addSpot(formData)
+    // Pass image as array
+    await addSpot(spotData, [aiImageFile.value])
     
     // Reset form and navigate to garage
     removeAIImage()
@@ -383,7 +383,7 @@ const applyAIResult = async () => {
 }
 
 const cancelAIRecognition = () => {
-  aiRecognitionResult = null
+  aiRecognitionResult.value = null
 }
 
 // Manual form submission

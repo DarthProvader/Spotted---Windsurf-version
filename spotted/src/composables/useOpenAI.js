@@ -12,12 +12,6 @@ export default function useOpenAI() {
         recognitionResult.value = null
 
         try {
-            console.log('Environment variables:', {
-                token: import.meta.env.VITE_GITHUB_TOKEN,
-                endpoint: import.meta.env.VITE_OPENAI_ENDPOINT,
-                model: import.meta.env.VITE_OPENAI_MODEL
-            })
-
             // Convert image to base64
             const reader = new FileReader()
             const imageBase64Promise = new Promise((resolve, reject) => {
@@ -69,7 +63,6 @@ export default function useOpenAI() {
                 .replace(/```\n?/g, '')      // Remove closing ```
                 .trim()                      // Remove any extra whitespace
 
-            console.log('Cleaned response:', cleanContent)
             const result = JSON.parse(cleanContent)
             
             if (result.error) {
