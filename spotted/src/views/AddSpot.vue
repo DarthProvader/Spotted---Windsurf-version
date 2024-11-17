@@ -32,75 +32,75 @@
           </nav>
         </div>
 
-        <form @submit.prevent="handleSubmit" class="space-y-6">
+        <form @submit.prevent="handleSubmit" class="space-y-8">
           <!-- Manual Upload Tab -->
-          <div v-if="activeTab === 'manual'">
-            <!-- Existing form fields -->
-            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <div v-if="activeTab === 'manual'" class="space-y-8">
+            <!-- Car Details -->
+            <div class="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
               <div>
-                <label for="make" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Make</label>
+                <label for="make" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Make</label>
                 <input
                   type="text"
                   id="make"
                   v-model="make"
                   required
-                  class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:text-white"
+                  class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:text-white px-4 py-2.5"
                 >
               </div>
               <div>
-                <label for="model" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Model</label>
+                <label for="model" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Model</label>
                 <input
                   type="text"
                   id="model"
                   v-model="model"
                   required
-                  class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:text-white"
+                  class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:text-white px-4 py-2.5"
                 >
               </div>
-            </div>
-
-            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
               <div>
-                <label for="year" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Year</label>
+                <label for="year" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Year</label>
                 <input
                   type="number"
                   id="year"
                   v-model="year"
                   required
-                  class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:text-white"
+                  class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:text-white px-4 py-2.5"
                 >
               </div>
               <div>
-                <label for="color" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Color</label>
+                <label for="color" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Color</label>
                 <input
                   type="text"
                   id="color"
                   v-model="color"
                   required
-                  class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:text-white"
+                  class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:text-white px-4 py-2.5"
                 >
               </div>
             </div>
 
-            <div>
-              <label for="location" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Location</label>
-              <input
-                type="text"
-                id="location"
-                v-model="location"
-                required
-                class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:text-white"
-              >
-            </div>
+            <!-- Location and Notes -->
+            <div class="space-y-6">
+              <div>
+                <label for="location" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Location</label>
+                <input
+                  type="text"
+                  id="location"
+                  v-model="location"
+                  required
+                  class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:text-white px-4 py-2.5"
+                >
+              </div>
 
-            <div>
-              <label for="notes" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Notes</label>
-              <textarea
-                id="notes"
-                v-model="notes"
-                rows="3"
-                class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:text-white"
-              ></textarea>
+              <div>
+                <label for="notes" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Notes</label>
+                <textarea
+                  id="notes"
+                  v-model="notes"
+                  rows="3"
+                  class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:text-white px-4 py-2.5"
+                ></textarea>
+              </div>
             </div>
 
             <!-- Image Upload -->

@@ -4,7 +4,10 @@
       <div class="flex justify-between h-16">
         <div class="flex">
           <div class="flex-shrink-0 flex items-center">
-            <router-link to="/" class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">Spotted</router-link>
+            <router-link to="/" class="flex items-center space-x-2">
+              <SpottedLogo size="32" />
+              <span class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">Spotted</span>
+            </router-link>
           </div>
           <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
             <router-link
@@ -168,6 +171,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import SpottedLogo from '../SpottedLogo.vue'
 import useAuth from '../../composables/useAuth'
 import useDarkMode from '../../composables/useDarkMode'
 

@@ -3,65 +3,20 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-center mb-8">
         <h1 class="text-3xl font-bold text-gray-900 dark:text-white">My Garage</h1>
-        <router-link
-          to="/add-spot"
-          class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-900"
-        >
-          Add New Spot
-        </router-link>
-      </div>
-
-      <!-- Filters -->
-      <div class="bg-white dark:bg-gray-800 shadow rounded-lg mb-6 p-4">
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-4">
-          <div>
-            <label for="makeFilter" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Make</label>
-            <select
-              id="makeFilter"
-              v-model="filters.make"
-              class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:focus:ring-indigo-400 sm:text-sm"
-            >
-              <option value="">All Makes</option>
-              <option v-for="make in uniqueMakes" :key="make" :value="make">{{ make }}</option>
-            </select>
-          </div>
-
-          <div>
-            <label for="yearFilter" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Year</label>
-            <select
-              id="yearFilter"
-              v-model="filters.year"
-              class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:focus:ring-indigo-400 sm:text-sm"
-            >
-              <option value="">All Years</option>
-              <option v-for="year in uniqueYears" :key="year" :value="year">{{ year }}</option>
-            </select>
-          </div>
-
-          <div>
-            <label for="colorFilter" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Color</label>
-            <select
-              id="colorFilter"
-              v-model="filters.color"
-              class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:focus:ring-indigo-400 sm:text-sm"
-            >
-              <option value="">All Colors</option>
-              <option v-for="color in uniqueColors" :key="color" :value="color">{{ color }}</option>
-            </select>
-          </div>
-
-          <div>
-            <label for="sortBy" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Sort By</label>
-            <select
-              id="sortBy"
-              v-model="sortBy"
-              class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:focus:ring-indigo-400 sm:text-sm"
-            >
-              <option value="createdAt">Date Added</option>
-              <option value="make">Make</option>
-              <option value="year">Year</option>
-            </select>
-          </div>
+        <div class="flex items-center space-x-4">
+          <FilterDropdown
+            v-model="filters"
+            :makes="uniqueMakes"
+            :years="uniqueYears"
+            :colors="uniqueColors"
+            v-model:sort="sortBy"
+          />
+          <router-link
+            to="/add-spot"
+            class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-900"
+          >
+            Add New Spot
+          </router-link>
         </div>
       </div>
 
@@ -371,6 +326,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import useSpots from '../composables/useSpots'
+import FilterDropdown from '../components/FilterDropdown.vue'
 
 // Helper function to get image URL
 const getImageUrl = (url) => {
